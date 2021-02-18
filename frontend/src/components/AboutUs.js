@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Col, Row, Card, Button } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 const AboutUs = () => {
 	return (
@@ -19,9 +20,18 @@ const AboutUs = () => {
 						Some quick example text to build on the card title and make up the
 						bulk of the card's content.
 					</Card.Text>
-					<Button variant='primary'>Learn More</Button>
-					<Button variant='primary'>Meet The Team</Button>
-					<Button variant='primary'>Contact Us</Button>
+					<Row>
+						<Col>
+							<LinkContainer to='/team'>
+								<Button block variant='primary'>Meet The Team</Button>
+							</LinkContainer>
+						</Col>
+						<Col>
+							<LinkContainer to='/contact'>
+								<Button block variant='primary'>Contact Us</Button>
+							</LinkContainer>
+						</Col>
+					</Row>
 				</Card.Body>
 			</Card>
 		</Container>

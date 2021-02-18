@@ -1,52 +1,41 @@
 import React from 'react';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 
 const Navigationbar = () => {
 	return (
 		<header>
-			<Navbar bg='dark' variant="dark">
-				<Navbar.Brand href='#home'>Viveack Realty Inc.</Navbar.Brand>
+			<Navbar bg='dark' variant='dark'>
+				<LinkContainer to='/'>
+					<Navbar.Brand>Viveack Realty Inc.</Navbar.Brand>
+				</LinkContainer>
 				<Navbar.Toggle aria-controls='basic-navbar-nav' />
 				<Navbar.Collapse id='basic-navbar-nav'>
 					<Nav className='ml-auto'>
-					<Nav.Link href="tel:123-456-7890">555-555-5555</Nav.Link>
+						<Nav.Link href='tel:123-456-7890'>555-555-5555</Nav.Link>
 						<NavDropdown title='Properties' id='basic-nav-dropdown'>
-							<NavDropdown.Item href='#action/3.1'>
-								Our Properties
-							</NavDropdown.Item>
-							<NavDropdown.Item href='#action/3.3'>
-								Search For A Property
-							</NavDropdown.Item>
-							<NavDropdown.Item href='#action/3.4'>
-								Free Home Evaluation
-							</NavDropdown.Item>
-							<NavDropdown.Item href='#action/3.4'>
-								Buying A Home
-							</NavDropdown.Item>
-							<NavDropdown.Item href='#action/3.4'>
-								NeighbourHoods
-							</NavDropdown.Item>
+							<LinkContainer to='/properties'>
+								<NavDropdown.Item>Our Properties</NavDropdown.Item>
+							</LinkContainer>
+							<NavDropdown.Item>Search For A Property</NavDropdown.Item>
+							<NavDropdown.Item>Free Home Evaluation</NavDropdown.Item>
+							<NavDropdown.Item>Buying A Home</NavDropdown.Item>
+							<NavDropdown.Item>NeighbourHoods</NavDropdown.Item>
 						</NavDropdown>
 						<NavDropdown title='About Us' id='basic-nav-dropdown'>
-							<NavDropdown.Item href='#action/3.1'>
-								Meet The Team
-							</NavDropdown.Item>
+							<LinkContainer to='/team'>
+								<NavDropdown.Item>Meet The Team</NavDropdown.Item>
+							</LinkContainer>
 							<NavDropdown.Item href='#action/3.2'>
 								Marketing Your Home
 							</NavDropdown.Item>
-							<NavDropdown.Item href='#action/3.2'>
-								Our Blog
-							</NavDropdown.Item>
-							<NavDropdown.Item href='#action/3.2'>
-								Events
-							</NavDropdown.Item>
-							<NavDropdown.Item href='#action/3.2'>
-								Mentoring
-							</NavDropdown.Item>
+							<NavDropdown.Item href='#action/3.2'>Our Blog</NavDropdown.Item>
+							<NavDropdown.Item href='#action/3.2'>Events</NavDropdown.Item>
+							<NavDropdown.Item href='#action/3.2'>Mentoring</NavDropdown.Item>
 							<NavDropdown.Divider />
-							<NavDropdown.Item href='#action/3.2'>
-								Contact Us
-							</NavDropdown.Item>
+							<LinkContainer to='/contact'>
+								<NavDropdown.Item>Contact Us</NavDropdown.Item>
+							</LinkContainer>
 						</NavDropdown>
 					</Nav>
 				</Navbar.Collapse>
