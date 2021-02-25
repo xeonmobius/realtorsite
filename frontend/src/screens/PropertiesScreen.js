@@ -1,36 +1,33 @@
-import React from 'react';
-import { Container, Image, Row, Col } from 'react-bootstrap';
-import houseData from '../data/houses';
+import React, { useState, useEffect } from 'react';
+import { Container, Image } from 'react-bootstrap';
+import axios from 'axios';
+import { useParams } from 'react-router';
 
-const PropertiesScreen = () => {
+const PropertiesScreen = ({ match }) => {
+	const houseId = match.params.id;
+
+	const [house, setHouse] = useState([]);
+
+	useEffect(() => {
+		const fetchAHouse = async () => {
+			const housez = await axios.get(`/houses/${houseId}`);
+			setHouse(housez.data);
+		};
+		fetchAHouse();
+	}, []);
 	return (
 		<Container className='py-3'>
-			<h1>{houseData[0].streetName}</h1>
+			<h1>{house.streetName}</h1>
 			<Image
-				src={houseData[0].image}
+				src={house.image}
 				style={{
 					width: '100%',
 					height: '100%',
 					objectFit: 'cover',
 				}}
 			/>
-            <h2 className='py-3'>
-				$ {houseData[0].price}
-			</h2>
-			<h5>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas vel
-				dui eget risus porta dignissim ac nec mi. Pellentesque habitant morbi
-				tristique senectus et netus et malesuada fames ac turpis egestas.
-				Pellentesque sed tempus magna. In in est faucibus, pulvinar tortor ut,
-				posuere erat. Sed ac dolor scelerisque, ultrices mi non, consectetur
-				purus. Nunc ac faucibus leo. Nunc non semper enim. Phasellus feugiat
-				elit sed nulla pharetra, sed gravida turpis feugiat. Donec eu imperdiet
-				tellus, vitae ultrices nisi. Cras pellentesque velit lacus, et elementum
-				sem mattis ac. Maecenas non aliquam felis, at feugiat nisl. Phasellus
-				quam erat, semper ac leo in, feugiat efficitur erat. In mattis efficitur
-				efficitur. Cras sed maximus mauris. Interdum et malesuada fames ac ante
-				ipsum primis in faucibus. Pellentesque nec tristique erat.
-			</h5>
+			<h2 className='py-3'>$ {house.price}</h2>
+			<h5>{house.longDescription}</h5>
 		</Container>
 	);
 };

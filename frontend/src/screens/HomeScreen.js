@@ -1,11 +1,22 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import MainHomeWorth from '../components/MainHomeWorth';
 import MarketingServices from '../components/MarketingServices';
 import AboutUs from '../components/AboutUs';
 import { Carousel } from 'react-bootstrap';
-import houses from '../data/houses';
+import axios from 'axios';
 
 const HomeScreen = () => {
+	const [houses, setHouses] = useState([])
+
+	useEffect(() => {
+		const fetchHouses = async () => {
+			const housez = await axios.get(`/houses`);
+			setHouses(housez.data.houses);
+		}
+		fetchHouses()
+		
+	},[])
+
 	return (
 		<>
 			<Carousel>

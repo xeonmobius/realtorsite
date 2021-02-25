@@ -1,0 +1,31 @@
+{
+  "name": "realtorsite",
+  "proxy": "http://127.0.0.1:8000",
+  "version": "1.0.0",
+  "description": "realtor site project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "(cd backend/src && watchexec --restart cargo run)",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run start\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xeonmobius/realtorsite.git"
+  },
+  "keywords": [
+    "realtor",
+    "git",
+    "crud"
+  ],
+  "author": "Shannon Chowdhury",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xeonmobius/realtorsite/issues"
+  },
+  "homepage": "https://github.com/xeonmobius/realtorsite#readme",
+  "dependencies": {
+    "concurrently": "^6.0.0"
+  }
+}
