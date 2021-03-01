@@ -232,7 +232,7 @@ fn auth<'r>(mut cookies: Cookies, db: State<'r, mongodb::sync::Database>) -> &'r
 fn connect() -> mongodb::sync::Database {
     println!("Connecting to MongoDB");
 
-    let client = Client::with_uri_str("mongodb+srv://shannonchow:samm2995@cluster0.htz6v.mongodb.net/proshop?authSource=admin&replicaSet=atlas-k9a80r-shard-0&readPreference=primary&appname=MongoDB%20Compass&ssl=true").unwrap();
+    let client = Client::with_uri_str("").unwrap();
     let db = client.database("realtor");
 
     println!("Connection Established");
