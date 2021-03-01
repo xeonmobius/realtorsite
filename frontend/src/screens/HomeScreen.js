@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import MainHomeWorth from '../components/MainHomeWorth';
 import MarketingServices from '../components/MarketingServices';
 import AboutUs from '../components/AboutUs';
@@ -6,16 +6,20 @@ import { Carousel } from 'react-bootstrap';
 import axios from 'axios';
 
 const HomeScreen = () => {
-	const [houses, setHouses] = useState([])
+	const [houses, setHouses] = useState([]);
 
 	useEffect(() => {
 		const fetchHouses = async () => {
-			const housez = await axios.get(`/houses`);
-			setHouses(housez.data.houses);
-		}
-		fetchHouses()
-		
-	},[])
+			try {
+				const housez = await axios.get('/houses');
+				console.log(housez);
+				setHouses(housez.data.houses);
+			} catch (e) {
+				console.log(e);
+			}
+		};
+		fetchHouses();
+	}, []);
 
 	return (
 		<>
@@ -33,7 +37,7 @@ const HomeScreen = () => {
 							alt={house.streetName}
 						/>
 						<Carousel.Caption>
-							<h2 style={{color: 'white'}}>{house.streetName}</h2>
+							<h2 style={{ color: 'white' }}>{house.streetName}</h2>
 							<p>{house.description}</p>
 						</Carousel.Caption>
 					</Carousel.Item>
