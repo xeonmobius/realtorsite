@@ -10,8 +10,7 @@ const TeamScreen = () => {
 	useEffect(() => {
 		const fetchTeamData = async () => {
 			const {data} = await axios.get('/team');
-			console.log(data.team)
-			setTeam(data.team);
+			setTeam(data);
 		}
 		fetchTeamData();
 	}, [])
@@ -21,10 +20,10 @@ const TeamScreen = () => {
 			<Container className='py-3'>
 				<h1>The Team</h1>
 				<Row>
-					{team.map((member, index) => (
+					{team.map((member) => (
 						<>
-							{member.type === 'main' && (
-								<Row  className='py-3' fluid="true">
+							{member.member_type === 'main' && (
+								<Row  className='py-3' fluid="true" key={member.id}>
 									<Col>
 										<Image src={member.image} alt={member.name} fluid />
 									</Col>
@@ -33,8 +32,8 @@ const TeamScreen = () => {
 									</Col>
 								</Row>
 							)}
-							{member.type === 'member' && (
-								<Col sm={12} md={6} lg={4} xl={3}>
+							{member.member_type === 'member' && (
+								<Col sm={12} md={6} lg={4} xl={3} key={member.id}>
 									<Card
 										className='my-2 mx-2'
 										style={{

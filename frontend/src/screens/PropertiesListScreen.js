@@ -8,8 +8,8 @@ const PropertiesListScreen = () => {
 
 	useEffect(() => {
 		const fetchHouses = async () => {
-			const housez = await axios.get(`/houses`);
-			setHouses(housez.data.houses);
+			const {data} = await axios.get(`/houses`);
+			setHouses(data);
 		}
 		fetchHouses()
 		
@@ -19,11 +19,11 @@ const PropertiesListScreen = () => {
 		<Container className='py-3'>
 			<h1>Our Properties</h1>
 			<Row>
-				{houses.map((house, index) => (
-					<Col sm={12} md={6} lg={4} xl={3}>
+				{houses.map((house) => (
+					<Col sm={12} md={6} lg={4} xl={3} key={house.id}>
 						<Card className='my-2 mx-2' style={{ height: '90%' }}>
 							<LinkContainer
-								to={`/properties/${index}`}
+								to={`/properties/${house.id}`}
 								style={{ cursor: 'pointer' }}
 							>
 								<Card.Img
@@ -38,7 +38,7 @@ const PropertiesListScreen = () => {
 							</LinkContainer>
 							<Card.Body>
 								<LinkContainer
-									to={`/properties/${index}`}
+									to={`/properties/${house.id}`}
 									style={{ cursor: 'pointer' }}
 								>
 									<Card.Title>{house.streetName}</Card.Title>

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Image } from 'react-bootstrap';
 import axios from 'axios';
-import { useParams } from 'react-router';
 
 const PropertiesScreen = ({ match }) => {
 	const houseId = match.params.id;
@@ -10,14 +9,14 @@ const PropertiesScreen = ({ match }) => {
 
 	useEffect(() => {
 		const fetchAHouse = async () => {
-			const housez = await axios.get(`/houses/${houseId}`);
-			setHouse(housez.data);
+			const {data} = await axios.get(`/houses/${houseId}`);
+			setHouse(data);
 		};
 		fetchAHouse();
 	}, []);
 	return (
 		<Container className='py-3'>
-			<h1>{house.streetName}</h1>
+			<h1>{house.street_name}</h1>
 			<Image
 				src={house.image}
 				style={{
@@ -27,7 +26,7 @@ const PropertiesScreen = ({ match }) => {
 				}}
 			/>
 			<h2 className='py-3'>$ {house.price}</h2>
-			<h5>{house.longDescription}</h5>
+			<h5>{house.long_description}</h5>
 		</Container>
 	);
 };

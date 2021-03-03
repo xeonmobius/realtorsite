@@ -14,7 +14,7 @@ const LoginScreen = ({history}) => {
 			user_password: password,
 		};
 
-        const {data} = await axios.post('/login', user)
+        const {data} = await axios.post('/admin/login', user)
 
         if (data === true) {
             history.push("/admin")

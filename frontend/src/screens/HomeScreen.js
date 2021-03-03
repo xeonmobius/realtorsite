@@ -12,8 +12,7 @@ const HomeScreen = () => {
 		const fetchHouses = async () => {
 			try {
 				const housez = await axios.get('/houses');
-				console.log(housez);
-				setHouses(housez.data.houses);
+				setHouses(housez.data);
 			} catch (e) {
 				console.log(e);
 			}
@@ -25,7 +24,7 @@ const HomeScreen = () => {
 		<>
 			<Carousel>
 				{houses.map((house) => (
-					<Carousel.Item>
+					<Carousel.Item key={house.id}>
 						<img
 							style={{
 								width: '100%',
