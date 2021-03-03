@@ -1,5 +1,5 @@
-use dotenv;
 use djangohashers::*;
+use dotenv;
 
 // Serde imports
 use serde::{Deserialize, Serialize};
@@ -145,7 +145,7 @@ pub fn get_team_from_mongo(db: &mongodb::sync::Database) -> Vec<Team> {
     for result in cursor {
         let team_bson = result.unwrap();
 
-        // Create a house struct
+        // Create a team struct
         let member = Team {
             id: team_bson
                 .get("_id")
@@ -238,7 +238,7 @@ pub fn create_a_member_in_mongo(db: &mongodb::sync::Database, team: &Team) -> bo
        "name": &team.name,
        "image": &team.image,
        "description": &team.description,
-       "member_type": &team.member_type,
+       "type": &team.member_type,
     };
 
     if cursor.count() > 0 {

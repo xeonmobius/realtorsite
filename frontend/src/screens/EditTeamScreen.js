@@ -7,43 +7,72 @@ const EditTeamScreen = ({ match, history }) => {
 	const [name, setName] = useState('');
 	const [description, setDescription] = useState('');
 	const [memberType, setMemberType] = useState('');
+	const [image, setImage] = useState('');
+
+	const reader = new FileReader();
 
 	const memberId = match.params.id;
+
+	const onImageUpload = (e) => {
+		reader.readAsDataURL(e);
+
+		reader.onload = function () {
+			setImage(reader.result);
+		};
+	};
 
 	const submitHandler = async (e) => {
 		e.preventDefault();
 
-		const memberUpdate = {
-			id: memberId,
-			name: name === '' ? member.name : name,
-			image: member.image,
-			description: description === '' ? member.description : description,
-		};
+		if (memberId === 'add') {
+			const member = {
+				id: '',
+				name: name,
+				image: image,
+				description: description,
+				member_type: memberType === '' ? member.member_type : memberType,
+			};
 
-		await axios.patch('/admin/team/', memberUpdate, { withCredentials: true });
+			await axios.post('/admin/team/', member, {
+				withCredentials: true,
+			});
+		} else {
+			const memberUpdate = {
+				id: memberId,
+				name: name === '' ? member.name : name,
+				image: image === '' ? member.image : image,
+				description: description === '' ? member.description : description,
+				member_type: memberType === '' ? member.member_type : memberType,
+			};
+			await axios.patch('/admin/team/', memberUpdate, {
+				withCredentials: true,
+			});
+		}
 	};
 
 	const deleteMember = async (e) => {
 		e.preventDefault();
+
 		if (window.confirm(`Are you sure you want to delete this house?`)) {
 			await axios.delete(
 				'/admin/team/',
-				{ headers: { 'Content-type': 'application/json' }, data: member},
+				{ headers: { 'Content-type': 'application/json' }, data: member },
 				{ withCredentials: true }
 			);
 		}
-		history.push('/admin')
+
+		history.push('/admin');
 	};
 
 	useEffect(() => {
 		const fetchAMember = async () => {
 			const { data } = await axios.get(`/team/${memberId}`);
 			setMember(data);
-			setName(data.name);
-			setDescription(data.description);
-			setMemberType(data.member_type);
 		};
-		fetchAMember();
+		if (memberId === 'add') {
+		} else {
+			fetchAMember();
+		}
 	}, []);
 
 	return (
@@ -51,12 +80,20 @@ const EditTeamScreen = ({ match, history }) => {
 			<Row>
 				<Col>
 					<Image
-						src={member.image}
+						src={image !== '' ? image : member.image}
 						style={{
 							width: '100%',
 							objectFit: 'cover',
 						}}
 					/>
+					<Form.Group>
+						<Form.Label>Image</Form.Label>
+						<Form.Control
+							type='file'
+							size='sm'
+							onChange={(e) => onImageUpload(e.target.files[0])}
+						/>
+					</Form.Group>
 				</Col>
 				<Col>
 					<Form onSubmit={submitHandler}>
@@ -103,16 +140,18 @@ const EditTeamScreen = ({ match, history }) => {
 							<h1 style={{ color: 'white' }}>Submit</h1>
 						</Button>
 					</Form>
-					<Button
-						variant='danger'
-						type='submit'
-						block
-						size='sm'
-						className='my-4'
-						onClick={deleteMember}
-					>
-						<h1 style={{ color: 'white' }}>Delete</h1>
-					</Button>
+					{memberId !== 'add' && (
+						<Button
+							variant='danger'
+							type='submit'
+							block
+							size='sm'
+							className='my-4'
+							onClick={deleteMember}
+						>
+							<h1 style={{ color: 'white' }}>Delete</h1>
+						</Button>
+					)}
 				</Col>
 			</Row>
 		</Container>

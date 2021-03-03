@@ -10,8 +10,8 @@ const LoginScreen = ({history}) => {
 	const submitHandler = async (e) => {
 		e.preventDefault();
 		const user = {
-			user_email: email,
-			user_password: password,
+			email: email,
+			password: password,
 		};
 
         const {data} = await axios.post('/admin/login', user)

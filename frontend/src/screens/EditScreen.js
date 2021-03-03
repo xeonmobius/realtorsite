@@ -9,24 +9,51 @@ const EditScreen = ({ match, history }) => {
 	const [longDescription, setLongDescription] = useState('');
 	const [residentType, setResidentType] = useState('');
 	const [price, setPrice] = useState('');
+	const [image, setImage] = useState('');
+
+	const reader = new FileReader();
 
 	const houseId = match.params.id;
+
+	const onImageUpload = (e) => {
+		reader.readAsDataURL(e);
+
+		reader.onload = function () {
+			setImage(reader.result);
+		};
+	};
 
 	const submitHandler = async (e) => {
 		e.preventDefault();
 
-		const houseUpdate = {
-			id: houseId,
-			street_name: streetName === '' ? house.street_name : streetName,
-			image: house.image,
-			description: description === '' ? house.description : description,
-			long_description:
-				longDescription === '' ? house.long_description : longDescription,
-			resident_type: residentType === '' ? house.resident_type : residentType,
-			price: price === '' ? house.price : price,
-		};
-
-		await axios.patch('/admin/house/', houseUpdate, { withCredentials: true });
+		if (houseId === 'add') {
+			const house = {
+				id: "",
+				street_name: streetName,
+				image: image,
+				description: description,
+				long_description: longDescription,
+				resident_type: residentType,
+				price: price,
+			};
+			await axios.post('/admin/house/', house, {
+				withCredentials: true,
+			});
+		} else {
+			const houseUpdate = {
+				id: houseId,
+				street_name: streetName === '' ? house.street_name : streetName,
+				image: image === '' ? house.image : image,
+				description: description === '' ? house.description : description,
+				long_description:
+					longDescription === '' ? house.long_description : longDescription,
+				resident_type: residentType === '' ? house.resident_type : residentType,
+				price: price === '' ? house.price : price,
+			};
+			await axios.patch('/admin/house/', houseUpdate, {
+				withCredentials: true,
+			});
+		}
 	};
 
 	const deleteHouse = async (e) => {
@@ -38,20 +65,18 @@ const EditScreen = ({ match, history }) => {
 				{ withCredentials: true }
 			);
 		}
-		history.push('/admin')
+		history.push('/admin');
 	};
 
 	useEffect(() => {
 		const fetchAHouse = async () => {
 			const { data } = await axios.get(`/houses/${houseId}`);
 			setHouse(data);
-			setStreetName(data.street_name);
-			setDescription(data.description);
-			setLongDescription(data.long_description);
-			setResidentType(data.Button);
-			setPrice(data.price);
 		};
-		fetchAHouse();
+		if (houseId === 'add') {
+		} else {
+			fetchAHouse();
+		}
 	}, []);
 
 	return (
@@ -59,12 +84,20 @@ const EditScreen = ({ match, history }) => {
 			<Row>
 				<Col>
 					<Image
-						src={house.image}
+						src={image !== '' ? image : house.image}
 						style={{
 							width: '100%',
 							objectFit: 'cover',
 						}}
 					/>
+					<Form.Group>
+						<Form.Label>Image</Form.Label>
+						<Form.Control
+							type='file'
+							size='sm'
+							onChange={(e) => onImageUpload(e.target.files[0])}
+						/>
+					</Form.Group>
 				</Col>
 				<Col>
 					<Form onSubmit={submitHandler}>
@@ -137,16 +170,18 @@ const EditScreen = ({ match, history }) => {
 							<h1 style={{ color: 'white' }}>Submit</h1>
 						</Button>
 					</Form>
-					<Button
-						variant='danger'
-						type='submit'
-						block
-						size='sm'
-						className='my-4'
-						onClick={deleteHouse}
-					>
-						<h1 style={{ color: 'white' }}>Delete</h1>
-					</Button>
+					{houseId !== 'add' && (
+						<Button
+							variant='danger'
+							type='submit'
+							block
+							size='sm'
+							className='my-4'
+							onClick={deleteHouse}
+						>
+							<h1 style={{ color: 'white' }}>Delete</h1>
+						</Button>
+					)}
 				</Col>
 			</Row>
 		</Container>

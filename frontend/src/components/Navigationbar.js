@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, NavDropdown } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 const Navigationbar = () => {
+	const [admin, setAdmin] = useState(false);
+
+	useEffect(() => {
+		setAdmin(window.location.href.includes('/admin/'));
+	}, []);
+
 	return (
 		<header>
 			<Navbar bg='dark' variant='dark'>
@@ -12,6 +18,11 @@ const Navigationbar = () => {
 				<Navbar.Toggle aria-controls='basic-navbar-nav' />
 				<Navbar.Collapse id='basic-navbar-nav'>
 					<Nav className='ml-auto'>
+						{admin && (
+							<LinkContainer to='/admin/'>
+								<Nav.Link>Admin Screen</Nav.Link>
+							</LinkContainer>
+						)}
 						<Nav.Link href='tel:123-456-7890'>555-555-5555</Nav.Link>
 						<NavDropdown title='Properties' id='basic-nav-dropdown'>
 							<LinkContainer to='/properties'>

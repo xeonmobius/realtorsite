@@ -39,6 +39,7 @@ fn post_house<'r>(
         email: user_and_password[1].to_string(),
         password: user_and_password[2].to_string(),
     };
+    
     if check_user_exists(&db, &user) {
         if create_a_house_in_mongo(&db, &house) {
             "true"
@@ -234,6 +235,15 @@ fn auth<'r>(mut cookies: Cookies, db: State<'r, mongodb::sync::Database>) -> &'r
     }
 }
 
+
+#[post("/test", format = "application/json", data = "<team>")]
+fn test(team: Json<Team>) -> String { 
+    println!("{:?}", team);
+
+    "false".to_string()
+
+}
+
 // POST that saves user contact info
 #[post("/contactus", format = "application/json", data = "<contact>")]
 fn post_contactus<'r>(contact: Json<Contact>, db: State<'r, mongodb::sync::Database>) -> &'r str {
@@ -253,7 +263,7 @@ fn main() {
                 get_team,
                 auth,
                 post_contactus,
-                get_a_member
+                get_a_member,
             ],
         )
         .mount(
