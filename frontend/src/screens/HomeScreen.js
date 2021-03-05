@@ -11,7 +11,7 @@ const HomeScreen = () => {
 	useEffect(() => {
 		const fetchHouses = async () => {
 			try {
-				const housez = await axios.get('/houses');
+				const housez = await axios.get('/houses/');
 				setHouses(housez.data);
 			} catch (e) {
 				console.log(e);

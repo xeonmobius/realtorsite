@@ -60,25 +60,13 @@ pub fn connect() -> mongodb::sync::Database {
 pub fn check_user_exists(db: &mongodb::sync::Database, user: &User) -> bool {
     let user_collection = db.collection("users");
 
-    let hash_pass = make_password_with_settings(
-        user.password.as_str(),
-        dotenv::var("SECRET").unwrap().as_str(),
-        Algorithm::PBKDF2SHA1,
-    );
 
-    let filter = doc! { "username": user.email.as_str(), "password": &hash_pass };
+    let filter = doc! { "username": user.email.as_str() };
 
     let cursor = user_collection.find(filter, None).unwrap();
 
-    // Iterate over the results of the cursor.
-    for result in cursor {
-        let user_bson = result.unwrap();
-        let user_email = user_bson.get("username").and_then(Bson::as_str).unwrap();
-        let user_password = user_bson.get("password").and_then(Bson::as_str).unwrap();
-
-        if (user_email == user.email) && (user_password == hash_pass) {
-            return true;
-        }
+    if cursor.count() > 0 {
+        return true;
     }
 
     false

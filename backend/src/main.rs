@@ -14,10 +14,13 @@ use rocket::http::{Cookie, Cookies, SameSite};
 use rocket::State;
 use rocket_contrib::json::{Json, JsonValue};
 
-// GETS a specific house based on ID
+// GETS all houses or a house by ID
 #[get("/houses/<id>", format = "json")]
-fn get_a_house(id: String, db: State<mongodb::sync::Database>) -> JsonValue {
-    json!(get_a_house_from_mongo(&db, &id))
+fn get_a_house(id: Option<String>, db: State<mongodb::sync::Database>) -> JsonValue {
+    match id {
+        Some(id) => json!(get_a_house_from_mongo(&db, &id)),
+        None => json!(get_all_houses_from_mongo(&db)),
+    }
 }
 
 // Get all houses
@@ -39,7 +42,6 @@ fn post_house<'r>(
         email: user_and_password[1].to_string(),
         password: user_and_password[2].to_string(),
     };
-    
     if check_user_exists(&db, &user) {
         if create_a_house_in_mongo(&db, &house) {
             "true"
@@ -108,8 +110,11 @@ fn get_team(db: State<mongodb::sync::Database>) -> JsonValue {
 
 // GETS the team JSON file
 #[get("/team/<id>")]
-fn get_a_member(id: String, db: State<mongodb::sync::Database>) -> JsonValue {
-    json!(get_a_member_from_mongo(&db, &id))
+fn get_a_member(id: Option<String>, db: State<mongodb::sync::Database>) -> JsonValue {
+    match id {
+        Some(id) => json!(get_a_member_from_mongo(&db, &id)),
+        None => json!(get_team_from_mongo(&db))
+    }
 }
 
 // POST creates a new team entry
@@ -235,13 +240,11 @@ fn auth<'r>(mut cookies: Cookies, db: State<'r, mongodb::sync::Database>) -> &'r
     }
 }
 
-
 #[post("/test", format = "application/json", data = "<team>")]
-fn test(team: Json<Team>) -> String { 
+fn test(team: Json<Team>) -> String {
     println!("{:?}", team);
 
     "false".to_string()
-
 }
 
 // POST that saves user contact info
