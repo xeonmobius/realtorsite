@@ -40,7 +40,9 @@ const Navigationbar = () => {
 							<NavDropdown.Item href='#action/3.2'>
 								Marketing Your Home
 							</NavDropdown.Item>
-							<NavDropdown.Item href='#action/3.2'>Our Blog</NavDropdown.Item>
+							<LinkContainer to='/blog'>
+								<NavDropdown.Item href='#action/3.2'>Our Blog</NavDropdown.Item>
+							</LinkContainer>
 							<NavDropdown.Item href='#action/3.2'>Events</NavDropdown.Item>
 							<NavDropdown.Item href='#action/3.2'>Mentoring</NavDropdown.Item>
 							<NavDropdown.Divider />

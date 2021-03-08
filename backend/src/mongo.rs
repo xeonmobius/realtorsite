@@ -1,4 +1,4 @@
-use djangohashers::*;
+//use djangohashers::*;
 use dotenv;
 
 // Serde imports
@@ -44,6 +44,15 @@ pub struct Team {
     member_type: String,
 }
 
+#[derive(Serialize, Deserialize, Debug)]
+pub struct Blog {
+    id: String,
+    title: String,
+    author: String,
+    text: String,
+    date: String,
+}
+
 // Connect to the Mongo DB database
 pub fn connect() -> mongodb::sync::Database {
     println!("Connecting to MongoDB");
@@ -59,7 +68,6 @@ pub fn connect() -> mongodb::sync::Database {
 // Search for the user and see if user exists
 pub fn check_user_exists(db: &mongodb::sync::Database, user: &User) -> bool {
     let user_collection = db.collection("users");
-
 
     let filter = doc! { "username": user.email.as_str() };
 
@@ -384,4 +392,145 @@ pub fn create_a_contact_in_mongo(db: &mongodb::sync::Database, contact: &Contact
     };
     let _result = contacts_collection.insert_one(doc, None);
     true
+}
+
+pub fn get_all_blog_from_mongo(db: &mongodb::sync::Database) -> Vec<Blog> {
+    let blog_collection = db.collection("blog");
+    let cursor = blog_collection.find(None, None).unwrap();
+
+    let mut blogs: Vec<Blog> = Vec::new();
+
+    // Iterate over the results of the cursor.
+    for result in cursor {
+        let blog_bson = result.unwrap();
+
+        // Create a blog struct
+        let blog = Blog {
+            id: blog_bson
+                .get("_id")
+                .and_then(Bson::as_object_id)
+                .unwrap()
+                .to_string(),
+            title: blog_bson
+                .get("title")
+                .and_then(Bson::as_str)
+                .unwrap()
+                .to_string(),
+            author: blog_bson
+                .get("author")
+                .and_then(Bson::as_str)
+                .unwrap()
+                .to_string(),
+            text: blog_bson
+                .get("text")
+                .and_then(Bson::as_str)
+                .unwrap()
+                .to_string(),
+            date: blog_bson
+                .get("date")
+                .and_then(Bson::as_str)
+                .unwrap()
+                .to_string(),
+        };
+
+        blogs.push(blog);
+    }
+
+    blogs
+}
+
+pub fn get_a_blog_from_mongo(db: &mongodb::sync::Database, id: &str) -> Blog {
+    let blog_collection = db.collection("blog");
+    let filter = doc! { "_id": ObjectId::with_string(&id).unwrap() };
+    let cursor = blog_collection.find(filter, None).unwrap();
+
+    let mut blog = Blog {
+        id: String::new(),
+        title: String::new(),
+        author: String::new(),
+        text: String::new(),
+        date: String::new(),
+    };
+
+    // Iterate over the results of the cursor.
+    for result in cursor {
+        let blog_bson = result.unwrap();
+
+        // Create a house struct
+        blog = Blog {
+            id: blog_bson
+                .get("_id")
+                .and_then(Bson::as_object_id)
+                .unwrap()
+                .to_string(),
+            title: blog_bson
+                .get("title")
+                .and_then(Bson::as_str)
+                .unwrap()
+                .to_string(),
+            author: blog_bson
+                .get("image")
+                .and_then(Bson::as_str)
+                .unwrap()
+                .to_string(),
+            text: blog_bson
+                .get("description")
+                .and_then(Bson::as_str)
+                .unwrap()
+                .to_string(),
+            date: blog_bson
+                .get("longDescription")
+                .and_then(Bson::as_str)
+                .unwrap()
+                .to_string(),
+        };
+    }
+    blog
+}
+
+pub fn update_a_blog_in_mongo(db: &mongodb::sync::Database, blog: &Blog) -> bool {
+    let blog_collection = db.collection("blog");
+    let filter = doc! { "_id": ObjectId::with_string(&blog.id).unwrap() };
+
+    let blog = doc! {
+        "title": &blog.title,
+        "author": &blog.author,
+        "text": &blog.text,
+        "date": &blog.date,
+    };
+
+    let result = blog_collection.update_one(filter, blog, None);
+    println!("{:?}", result);
+    true
+}
+
+pub fn delete_a_blog_in_mongo(db: &mongodb::sync::Database, blog: &Blog) -> bool {
+    let blog_collection = db.collection("blog");
+    let filter = doc! { "_id": ObjectId::with_string(&blog.id).unwrap() };
+
+    let result = blog_collection.delete_one(filter, None);
+    println!("{:?}", result);
+    true
+}
+
+pub fn create_a_blog_in_mongo(db: &mongodb::sync::Database, blog: &Blog) -> bool {
+    let blog_collection = db.collection("blog");
+    let filter = doc! { "title" : &blog.title };
+    let cursor = blog_collection.find(filter, None).unwrap();
+
+    let blog = doc! {
+        "title": &blog.title,
+        "author": &blog.author,
+        "text": &blog.text,
+        "date": &blog.date,
+    };
+
+    if cursor.count() > 0 {
+        println!("Blog already exists!");
+        return false;
+    } else {
+        let result = blog_collection.insert_one(blog, None);
+        println!("{:?}", result);
+        return true;
+    };
 }
